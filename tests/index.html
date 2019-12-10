@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="text/javascript" src="../src/pano.js"></script>
+        <script type="text/javascript" src="tests.js"></script>
+    </head>
+    <body>
+        <div id="caroussel"></div>
+        <script>
+            new Pano.create({
+                to: "caroussel",
+                items: [
+                    {
+                        el: "/src/assets/img/img1.jpg",
+                        label: "image 1"
+                    },
+                    {
+                        el: "/src/assets/img/img2.jpg",
+                        label: "image 2"
+                    },
+                    {
+                        el: "/src/assets/img/video1.mp4",
+                        label: "video 1"
+                    }
+                ],
+                type: "linear",
+                animation: "fade"
+            }).number(7);
+        </script>
+
+    </body>
+</html>
