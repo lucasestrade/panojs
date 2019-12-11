@@ -1,0 +1,28 @@
+.--pano-block{
+    box-sizing: border-box;
+    position: relative;
+}
+
+.--pano-block .--pano-label{
+    position: absolute;
+    box-sizing: border-box;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-width: 100%;
+    max-height: calc(100% - 10px);
+    overflow-y: auto;
+    padding: 5px 0px 5px 0px;
+    word-wrap: break-word;
+}
+
+.--pano-block .--pano-img{
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+}
+
+.--pano-block .--pano-video{
+    width: 100%;
+    height: 100%;
+}

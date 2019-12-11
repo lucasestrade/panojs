@@ -2,19 +2,38 @@
 <html>
     <head>
         <script type="text/javascript" src="../src/pano.js"></script>
-        <script type="text/javascript" src="tests.js"></script>
     </head>
     <body>
-        <div class="caroussel"></div>
-        <div class="caroussel"></div>
+        <div id="caroussel"></div>
         <script>
             new Pano.create({
-                to: ".caroussel",
+                to: "#caroussel",
+                type: "linear",
+                animation: "fade",
                 items: [
                     {
                         src: "file:///C:/Users/Lucas/Desktop/panojs/src/assets/img/img1.jpg",
                         alt: "une image trop cool",
-                        label: "image 1"
+                        label: "image 1",
+                        labelOptions: {
+                            color: "yellow",
+                            backgroundColor: "green",
+                            textAlign: "center",
+                            fontSize: 15,
+                            textIndent: 5,
+                            fontFamily: "arial",
+                            boxShadow: "1px 1px 20px #000000",
+                            border: "1px solid red",
+                        },
+                        imgOptions: {
+                            backgroundSize: "contain",
+                            backgroundPosition: "center",
+                            boxShadow: "1px 1px 20px #000000",
+                            onClick: {
+                                to: "https://google.fr",
+                                blank: true
+                            }
+                        }
                     },
                     {
                         src: "file:///C:/Users/Lucas/Desktop/panojs/src/assets/img/img2.webp",
@@ -28,8 +47,11 @@
                         }
                     }
                 ],
-                type: "linear",
-                animation: "fade"
+                style: {
+                    width: 300,
+                    height: 300,
+                    "border-radius": "50%"
+                }
             });
         </script>
 
