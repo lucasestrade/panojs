@@ -91,9 +91,10 @@ var Pano = {
             }else{
                 parent.appendChild(newBlock);
             }
+            let linkBlock;
             switch(elementType){
                 case "img":
-                    this.createPanoElementImg(element, newBlock, n);
+                    linkBlock = this.createPanoElementImg(element, newBlock, n);
                     break;
                 case "video":
                     this.createPanoElementVideo(element, newBlock, n);
@@ -102,7 +103,10 @@ var Pano = {
                     Pano.log.error("The file extension is not valid");
                     return;
             }
-            this.createLabel(element, newBlock, n);
+            if(typeof linkBlock === "undefined")
+                this.createLabel(element, newBlock, n);
+            else
+                this.createLabel(element, linkBlock, n);
         },
         /**
          * create label in pano
@@ -117,7 +121,7 @@ var Pano = {
                 case "string":
                     let newDiv = document.createElement("div");
                     let styleAttribute = document.createAttribute("style");
-                    let defaultValue = "background-color:#000000; color:#FFFFFF;";
+                    let defaultValue = "background-color:rgba(0,0,0,0.7); color:#FFFFFF;";
                     this.createLabelStyleAttribute(element.labelOptions, styleAttribute, defaultValue);
                     let classAttribute = document.createAttribute("class");
                     let idAttribute = document.createAttribute("id");
@@ -157,6 +161,7 @@ var Pano = {
                                 case "border":
                                 case "boxShadow":
                                 case "textShadow":
+                                case "position":
                                     if(typeof labelOptions[labelOption] !== "string"){
                                         Pano.log.error("'" + labelOption + "' option must be of type 'string'");
                                         return;
@@ -236,7 +241,7 @@ var Pano = {
          */
         getElementType : function(element){
             if(typeof element !== "string"){
-                Pano.log.error("'el' is not a string");
+                Pano.log.error("'src' is not a string");
                 return;
             };
             let validImgExtensions = ["jpg", "png", "jpeg", "gif", "tiff", "webp", "bmp", "svg"];
@@ -253,24 +258,14 @@ var Pano = {
          * @param {string} img path to img
          * @param {parent} element to be imported
          * @param {integer} n unique element id
+         * 
+         * @return {HTMLAllCollection|undefined} undefined if not onclickable and html <a> element if clickable 
          */
         createPanoElementImg : function(element, parent, n){
             let newImg = document.createElement("div");
             let styleAttribute = document.createAttribute("style");
             let defaultValue = "background-size: contain; background-position: center;";
             this.createImgStyleAttribute(element.imgOptions, styleAttribute, defaultValue);
-            switch(typeof element.alt){
-                case "undefined":
-                    break;
-                case "string":
-                    let altAttribute = document.createAttribute("alt");
-                    altAttribute.value = element.alt;
-                    newImg.setAttributeNode(altAttribute);
-                    break;
-                default:
-                    Pano.log.error("'alt' attribute must be of type 'string'");
-                    return;
-            }
             let classAttribute = document.createAttribute("class");
             let idAttribute = document.createAttribute("id");
             classAttribute.value = "--pano-img";
@@ -279,7 +274,69 @@ var Pano = {
             newImg.setAttributeNode(classAttribute);
             newImg.setAttributeNode(styleAttribute);
             newImg.setAttributeNode(idAttribute);
-            parent.appendChild(newImg);
+            switch(typeof element.onClick){
+                case "undefined":
+                    parent.appendChild(newImg);
+                    return;
+                case "object":
+                    let onClickObject = element.onClick;
+                    switch(typeof onClickObject.to){
+                        case "undefined":
+                            Pano.log.error("'to' parameter not found in 'onClick' object");
+                            return;
+                        case "string":
+                            let newLink = this.createOnClickableImg(newImg, onClickObject);
+                            parent.appendChild(newLink);
+                            return newLink;
+                        default:
+                            Pano.log.error("'to' parameter must be of type 'string'");
+                            return;
+                    }
+                default:
+                    Pano.log.error("'onClick' attribute must be of type 'object'");
+                    return;
+            }
+        },
+        /**
+         * create link element to make img clickable
+         * @param {HTMLAllCollection} img html element of img 
+         * @param {object} onClickObject onClick parameters
+         * 
+         * @return {HTMLAllCollection} newLink created html link 
+         */
+        createOnClickableImg : function(img, onClickObject){
+            let newLink = document.createElement("a");
+            let hrefAttribute = document.createAttribute("href");
+            hrefAttribute.value = onClickObject.to;
+            switch(typeof onClickObject.blank){
+                case "undefined":
+                    break;
+                case "boolean":
+                    if(onClickObject.blank){
+                        let blankAttribute = document.createAttribute("target");
+                        blankAttribute.value = "_blank";
+                        newLink.setAttributeNode(blankAttribute);
+                    }
+                    break;
+                default:
+                    Pano.log.error("'blank' parameter must be of type 'boolean'");
+                    return;
+            }
+            switch(typeof onClickObject.title){
+                case "undefined":
+                    break;
+                case "string":
+                    let titleAttribute = document.createAttribute("title");
+                    titleAttribute.value = onClickObject.title;
+                    newLink.setAttributeNode(titleAttribute);
+                    break;
+                default:
+                    Pano.log.error("'title' parameter must be of type 'string'");
+                    return;
+            }
+            newLink.setAttributeNode(hrefAttribute);
+            newLink.appendChild(img);
+            return newLink;
         },
         /**
          * create img style attribute
@@ -305,8 +362,6 @@ var Pano = {
                                         return;
                                     }
                                     this.createOneStyleValue(attribute, imgOptions[imgOption], imgOption);
-                                    break;
-                                case "onClick":
                                     break;
                                 default:
                                     Pano.log.error("'" + imgOption + "' is not a valid value for 'imgOption'");
@@ -356,6 +411,9 @@ var Pano = {
                     break;
                 case "backgroundPosition":
                     attribute.value += "background-position:" + styleValue + ";";
+                    break;
+                case "position":
+                    attribute.value += styleValue + ":0;";
                     break;
                 case "fontSize":
                     attribute.value += "font-size:" + styleValue + "px;";
@@ -428,7 +486,7 @@ var Pano = {
         }
     }
 }
-
+console.log(Pano);
 let cssPath = 'file:///C:/Users/Lucas/Desktop/panojs/src/assets/style/style.css'; 
 var head  = document.getElementsByTagName('head')[0];
 var link  = document.createElement('link');
