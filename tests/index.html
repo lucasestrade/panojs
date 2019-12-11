@@ -26,8 +26,8 @@
                             border: "1px solid red",
                         },
                         imgOptions: {
-                            backgroundSize: "contain",
-                            backgroundPosition: "center",
+                            backgroundSize: "cover",
+                            backgroundPosition: "left",
                             boxShadow: "1px 1px 20px #000000",
                             onClick: {
                                 to: "https://google.fr",
@@ -37,7 +37,9 @@
                     },
                     {
                         src: "file:///C:/Users/Lucas/Desktop/panojs/src/assets/img/img2.webp",
-                        label: "image 2"
+                        imgOptions: {
+                            backgroundSize: "cover"
+                        }
                     },
                     {
                         src: "file:///C:/Users/Lucas/Desktop/panojs/src/assets/videos/video1.mp4",
@@ -47,8 +49,8 @@
                         }
                     }
                 ],
-                style: {
-                    width: 300,
+                panoOptions: {
+                    width: 500,
                     height: 300,
                     "border-radius": "50%"
                 }

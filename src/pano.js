@@ -76,7 +76,7 @@ var Pano = {
                     Pano.log.error("'to' parameter must be of type 'string' or 'object'");
             }
             let defaultValue = "width:200px; height:200px;";
-            this.createStyleAttribute(object.style, blockStyleAttribute, defaultValue)
+            this.createStyleAttribute(object.panoOptions, blockStyleAttribute, defaultValue)
             newBlock.setAttributeNode(blockStyleAttribute);
             let blockClassAttribute = document.createAttribute("class");
             let blockIdAttribute = document.createAttribute("id");
@@ -151,74 +151,26 @@ var Pano = {
                         for(labelOption in labelOptions){
                             switch(labelOption){
                                 case "color":
-                                    if(typeof labelOptions[labelOption] !== "string"){
-                                        Pano.log.error("'color' option must be of type 'string'");
-                                        return;
-                                    }
-                                    attribute.value += "color:" + labelOptions[labelOption] + ";";
-                                    break;
                                 case "backgroundColor":
-                                    if(typeof labelOptions[labelOption] !== "string"){
-                                        Pano.log.error("'backgroundColor' option must be of type 'number'");
-                                        return;
-                                    }
-                                    attribute.value += "background-color:" + labelOptions[labelOption] + ";";
-                                    break;
                                 case "textAlign":
-                                    if(typeof labelOptions[labelOption] !== "string"){
-                                        Pano.log.error("'textAlign' option must be of type 'number'");
-                                        return;
-                                    }
-                                    attribute.value += "text-align:" + labelOptions[labelOption] + ";";
-                                    break;
-                                case "fontSize":
-                                    if(typeof labelOptions[labelOption] !== "number"){
-                                        Pano.log.error("'fontSize' option must be of type 'number'");
-                                        return;
-                                    }
-                                    attribute.value += "font-size:" + labelOptions[labelOption] + "px;";
-                                    break;
-                                case "textIndent":
-                                    if(typeof labelOptions[labelOption] !== "number"){
-                                        Pano.log.error("'textIndent' option must be of type 'number'");
-                                        return;
-                                    }
-                                    attribute.value += "text-indent:" + labelOptions[labelOption] + "px;";
-                                    break;
                                 case "fontFamily":
-                                    if(typeof labelOptions[labelOption] !== "string"){
-                                        Pano.log.error("'fontFamily' option must be of type 'string'");
-                                        return;
-                                    }
-                                    attribute.value += "font-family:" + labelOptions[labelOption] + ";";
-                                    break;
+                                case "border":
                                 case "boxShadow":
-                                    if(typeof labelOptions[labelOption] !== "string"){
-                                        Pano.log.error("'boxShadow' option must be of type 'string'");
-                                        return;
-                                    }
-                                    attribute.value += "box-shadow:" + labelOptions[labelOption] + ";";
-                                    break;
                                 case "textShadow":
                                     if(typeof labelOptions[labelOption] !== "string"){
-                                        Pano.log.error("'textShadow' option must be of type 'string'");
+                                        Pano.log.error("'" + labelOption + "' option must be of type 'string'");
                                         return;
                                     }
-                                    attribute.value += "text-shadow:" + labelOptions[labelOption] + ";";
+                                    this.createOneStyleValue(attribute, labelOptions[labelOption], labelOption);
                                     break;
-                                case "border":
-                                    if(typeof labelOptions[labelOption] !== "string"){
-                                        Pano.log.error("'border' option must be of type 'string'");
-                                        return;
-                                    }
-                                    attribute.value += "border:" + labelOptions[labelOption] + ";";
-                                    break;
+                                case "fontSize":
+                                case "textIndent":
                                 case "borderRadius":
                                     if(typeof labelOptions[labelOption] !== "number"){
-                                        Pano.log.error("'borderRadius' option must be of type 'number'");
+                                        Pano.log.error("'" + labelOption + "' option must be of type 'number'");
                                         return;
                                     }
-                                    attribute.value += "border-radius:" + labelOptions[labelOption] + "px;";
+                                    this.createOneStyleValue(attribute, labelOptions[labelOption], labelOption);
                                     break;
                                 default:
                                     Pano.log.error("Invalid value for 'labelOption'");
@@ -322,7 +274,7 @@ var Pano = {
             let classAttribute = document.createAttribute("class");
             let idAttribute = document.createAttribute("id");
             classAttribute.value = "--pano-img";
-            styleAttribute.value = "background-image: url(" + element.src + ");";
+            styleAttribute.value += "background-image: url(" + element.src + ");";
             idAttribute.value = "--pano-img-" + n;
             newImg.setAttributeNode(classAttribute);
             newImg.setAttributeNode(styleAttribute);
@@ -346,25 +298,13 @@ var Pano = {
                         for(imgOption in imgOptions){
                             switch(imgOption){
                                 case "backgroundSize":
-                                    if(typeof imgOptions[imgOption] !== "string"){
-                                        Pano.log.error("'backgroundSize' option must be of type 'string'");
-                                        return;
-                                    }
-                                    attribute.value += "background-size:" + imgOptions[imgOption] + ";";
-                                    break;
                                 case "backgroundPosition":
-                                    if(typeof imgOptions[imgOption] !== "string"){
-                                        Pano.log.error("'backgroundPosition' option must be of type 'number'");
-                                        return;
-                                    }
-                                    attribute.value += "background-position:" + imgOptions[imgOption] + ";";
-                                    break;
                                 case "boxShadow":
                                     if(typeof imgOptions[imgOption] !== "string"){
-                                        Pano.log.error("'boxShadow' option must be of type 'number'");
+                                        Pano.log.error("'" + imgOption + "' option must be of type 'string'");
                                         return;
                                     }
-                                    attribute.value += "box-shadow:" + imgOptions[imgOption] + ";";
+                                    this.createOneStyleValue(attribute, imgOptions[imgOption], imgOption);
                                     break;
                                 case "onClick":
                                     break;
@@ -380,6 +320,55 @@ var Pano = {
                 default:
                     Pano.log.error("'imgOptions' property must be of type 'object'");
                     return;
+            }
+        },
+        /**
+         * create one style string
+         * @param {HtmlAttributes} attribute attribut of the element
+         * @param {string|number} styleValue value of style
+         * @param {string} style type of style
+         */
+        createOneStyleValue : function(attribute, styleValue, style){
+            switch(style){
+                case "color":
+                    attribute.value += "color:" + styleValue + ";";
+                    break;
+                case "backgroundColor":
+                    attribute.value += "background-color:" + styleValue + ";";
+                    break;
+                case "textAlign":
+                    attribute.value += "text-align:" + styleValue + ";";
+                    break;
+                case "fontFamily":
+                    attribute.value += "font-family:" + styleValue + ";";
+                    break;
+                case "border":
+                    attribute.value += "border:" + styleValue + ";";
+                    break;
+                case "boxShadow":
+                    attribute.value += "box-shadow:" + styleValue + ";";
+                    break;
+                case "textShadow":
+                    attribute.value += "text-shadow:" + styleValue + ";";
+                    break;
+                case "backgroundSize":
+                    attribute.value += "background-size:" + styleValue + ";";
+                    break;
+                case "backgroundPosition":
+                    attribute.value += "background-position:" + styleValue + ";";
+                    break;
+                case "fontSize":
+                    attribute.value += "font-size:" + styleValue + "px;";
+                    break;
+                case "textIndent":
+                    attribute.value += "text-indent:" + styleValue + "px;";
+                    break;
+                case "borderRadius":
+                    attribute.value += "border-radius:" + styleValue + "px;";
+                    break;
+                default:
+                    Pano.log.error("'" + style + "' is not a valid option");
+                    break;
             }
         },
         /**
