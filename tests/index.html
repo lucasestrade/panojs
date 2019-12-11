@@ -5,27 +5,32 @@
         <script type="text/javascript" src="tests.js"></script>
     </head>
     <body>
-        <div id="caroussel"></div>
+        <div class="caroussel"></div>
+        <div class="caroussel"></div>
         <script>
             new Pano.create({
-                to: "caroussel",
+                to: ".caroussel",
                 items: [
                     {
-                        el: "/src/assets/img/img1.jpg",
+                        src: "file:///C:/Users/Lucas/Desktop/panojs/src/assets/img/img1.jpg",
+                        alt: "une image trop cool",
                         label: "image 1"
                     },
                     {
-                        el: "/src/assets/img/img2.jpg",
+                        src: "file:///C:/Users/Lucas/Desktop/panojs/src/assets/img/img2.webp",
                         label: "image 2"
                     },
                     {
-                        el: "/src/assets/img/video1.mp4",
-                        label: "video 1"
+                        src: "file:///C:/Users/Lucas/Desktop/panojs/src/assets/videos/video1.mp4",
+                        label: "video 1",
+                        options: {
+                            "controls": true
+                        }
                     }
                 ],
                 type: "linear",
                 animation: "fade"
-            }).number(7);
+            });
         </script>
 
     </body>
