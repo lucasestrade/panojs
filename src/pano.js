@@ -7,6 +7,7 @@
  * @github author => https://github.com/lucasestrade
  * @github repository => https://github.com/lucasestrade/panojs
  * 
+ * Copyright 2019, Lucas Estrade
  * Released under the MIT license
  * 
  */
