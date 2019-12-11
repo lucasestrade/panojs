@@ -10,7 +10,6 @@
  * Released under the MIT license
  * 
  */
-
 var Pano = {
     create : function(object) {
         if([object.to, object.items].filter(element => typeof element === "undefined").length > 0){
