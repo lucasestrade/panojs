@@ -1,65 +1,90 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <script type="text/javascript" src="../src/pano.js"></script>
-    </head>
-    <body>
-        <div id="caroussel"></div>
-        <script>
-            new Pano.create("#caroussel", {
-                type: "linear",
-                animation: "fade",
-                items: [
-                    {
-                        src: "file:///C:/Users/Lucas/Desktop/panojs/src/assets/img/img1.jpg",
-                        label: "image 1",
-                        labelOptions: {
-                            position: "bottom",
-                            color: "#FFFFFF",
-                            backgroundColor: "rgba(0,0,0,0.7)",
-                            textAlign: "center",
-                            fontSize: 15,
-                            textIndent: 5,
-                            fontFamily: "arial",
-                        },
-                        imgOptions: {
-                            backgroundSize: "cover",
-                            backgroundPosition: "center",
-                        },
-                        onClick: {
-                            to: "https://google.fr",
-                            blank: true,
-                            title: "go vers le lien mdr"
-                        }
-                    },
-                    {
-                        src: "file:///C:/Users/Lucas/Desktop/panojs/src/assets/img/img2.webp",
-                        imgOptions: {
-                            backgroundSize: "cover"
-                        }
-                    },
-                    {
-                        src: "file:///C:/Users/Lucas/Desktop/panojs/src/assets/videos/video1.mp4",
-                        label: "video 1",
-                        labelOptions: {
-                            position: "top",
-                            backgroundColor: "rgba(0,0,0,0.7)",
-                            color: "#FFFFFF",
-                            textAlign: "center",
-                            fontFamily: "arial"
-                        },
-                        options: {
-                            "controls": true
-                        }
-                    }
-                ],
-                panoOptions: {
-                    width: 500,
-                    height: 300,
-                    "border-radius": "50%"
-                }
-            });
-        </script>
 
-    </body>
+<head>
+    <script type="text/javascript" src="../src/pano.js"></script>
+    <style>
+        body {
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        #caroussel {
+            margin: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="caroussel"></div>
+    <script>
+        new Pano.create("#caroussel", {
+            type: "linear",
+            timeTransition: 0.5,
+            dots: true,
+            set: 2,
+            step: 1,
+            items: [
+                {
+                    src: "file:///C:/Users/Lucas/Desktop/panojs/src/assets/img/img1.jpg",
+                    label: "image 1",
+                    labelOptions: {
+                        position: "bottom",
+                        color: "#FFFFFF",
+                        backgroundColor: "rgba(0,0,0,0.7)",
+                        textAlign: "center",
+                        fontSize: 15,
+                        textIndent: 5,
+                        fontFamily: "arial",
+                    },
+                    imgOptions: {
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                    },
+                    onClick: {
+                        to: "https://google.fr",
+                        blank: true,
+                        title: "go vers le lien mdr"
+                    }
+                },
+                {
+                    src: "file:///C:/Users/Lucas/Desktop/panojs/src/assets/img/img2.webp",
+                    label: "image 2",
+                    imgOptions: {
+                        backgroundSize: "cover"
+                    },
+                    focus: true
+                },
+                {
+                    src: "file:///C:/Users/Lucas/Desktop/panojs/src/assets/img/img2.webp",
+                    imgOptions: {
+                        backgroundSize: "cover"
+                    },
+                    focus: true
+                },
+                {
+                    src: "file:///C:/Users/Lucas/Desktop/panojs/src/assets/videos/video1.mp4",
+                    label: "video 1",
+                    labelOptions: {
+                        position: "bottom",
+                        backgroundColor: "rgba(0,0,0,0.7)",
+                        color: "#FFFFFF",
+                        textAlign: "center",
+                        fontFamily: "arial"
+                    },
+                    options: {
+                        "controls": true
+                    }
+                }
+            ],
+            panoOptions: {
+                width: 300,
+                height: 200,
+                "border-radius": "50%"
+            }
+        });
+    </script>
+
+</body>
+
 </html>

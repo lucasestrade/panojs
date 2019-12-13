@@ -25,3 +25,23 @@
     width: 100%;
     height: 100%;
 }
+
+.--pano-flex{
+    display: flex;
+}
+
+.--pano-dots{
+    display: flex;
+    justify-content: center;
+}
+
+.--pano-dots .--pano-dot-input{
+    width: 15px;
+    height: 15px;
+    border: 1px solid #000000;
+    border-radius: 50%;
+    background-color: transparent;
+    margin: 5px;
+    cursor: pointer;
+    outline: none;
+}
