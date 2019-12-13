@@ -13,12 +13,11 @@
  */
 
 var Pano = {
-    create : function(object) {
-        if([object.to, object.items].filter(element => typeof element === "undefined").length > 0){
+    create : function(to, object) {
+        if([to, object.items].filter(element => typeof element === "undefined").length > 0){
             Pano.log.error("'CREATE' function object not valid. At least 'to', 'items' and 'type' are necessary"); 
             return;
         };
-        let to = object.to;
         let items = object.items;
         let n = 1;
         items.map(element => {
@@ -54,7 +53,6 @@ var Pano = {
             let elementType = this.getElementType(element.src);
             let parent;
             let typeTo;
-            let newBlock = document.createElement("div");
             let blockStyleAttribute = document.createAttribute("style");
             blockStyleAttribute.value = "";
             switch(typeof to){
@@ -77,14 +75,13 @@ var Pano = {
                     Pano.log.error("'to' parameter must be of type 'string' or 'object'");
             }
             let defaultValue = "width:200px; height:200px;";
-            this.createStyleAttribute(object.panoOptions, blockStyleAttribute, defaultValue)
+            this.createStyleAttribute(object.panoOptions, blockStyleAttribute, defaultValue);
+            let newBlock = this.createElement("div", {
+                id: "--pano-block-" + n,
+                className: "--pano-block"
+            });
+            console.log(newBlock);
             newBlock.setAttributeNode(blockStyleAttribute);
-            let blockClassAttribute = document.createAttribute("class");
-            let blockIdAttribute = document.createAttribute("id");
-            blockClassAttribute.value = "--pano-block";
-            blockIdAttribute.value = "--pano-block-" + n;
-            newBlock.setAttributeNode(blockClassAttribute);
-            newBlock.setAttributeNode(blockIdAttribute);
             if(typeTo === "class"){
                 for(let i = 0; i < parent.length; i++){
                     parent[i].appendChild(newBlock);
@@ -120,19 +117,15 @@ var Pano = {
                 case "undefined":
                     break;
                 case "string":
-                    let newDiv = document.createElement("div");
+                    let newDiv = this.createElement("div", {
+                        id: "--pano-label-" + n,
+                        className: "--pano-label",
+                        textContent: element.label
+                    });
                     let styleAttribute = document.createAttribute("style");
                     let defaultValue = "background-color:rgba(0,0,0,0.7); color:#FFFFFF;";
                     this.createLabelStyleAttribute(element.labelOptions, styleAttribute, defaultValue);
-                    let classAttribute = document.createAttribute("class");
-                    let idAttribute = document.createAttribute("id");
-                    classAttribute.value = "--pano-label";
-                    idAttribute.value = "--pano-label-" + n;
-                    newDiv.setAttributeNode(classAttribute);
-                    newDiv.setAttributeNode(idAttribute);
                     newDiv.setAttributeNode(styleAttribute);
-                    let newLabel = document.createTextNode(element.label);
-                    newDiv.appendChild(newLabel);
                     block.appendChild(newDiv);
                     break;
                 default:
@@ -263,18 +256,15 @@ var Pano = {
          * @return {HTMLAllCollection|undefined} undefined if not onclickable and html <a> element if clickable 
          */
         createPanoElementImg : function(element, parent, n){
-            let newImg = document.createElement("div");
+            let newImg = this.createElement("div", {
+                id: "--pano-img-" + n,
+                className: "--pano-img"
+            });
             let styleAttribute = document.createAttribute("style");
             let defaultValue = "background-size: contain; background-position: center;";
             this.createImgStyleAttribute(element.imgOptions, styleAttribute, defaultValue);
-            let classAttribute = document.createAttribute("class");
-            let idAttribute = document.createAttribute("id");
-            classAttribute.value = "--pano-img";
             styleAttribute.value += "background-image: url(" + element.src + ");";
-            idAttribute.value = "--pano-img-" + n;
-            newImg.setAttributeNode(classAttribute);
             newImg.setAttributeNode(styleAttribute);
-            newImg.setAttributeNode(idAttribute);
             switch(typeof element.onClick){
                 case "undefined":
                     parent.appendChild(newImg);
@@ -306,9 +296,9 @@ var Pano = {
          * @return {HTMLAllCollection} newLink created html link 
          */
         createOnClickableImg : function(img, onClickObject){
-            let newLink = document.createElement("a");
-            let hrefAttribute = document.createAttribute("href");
-            hrefAttribute.value = onClickObject.to;
+            let newLink = this.createElement("a", {
+                href: onClickObject.to
+            });
             switch(typeof onClickObject.blank){
                 case "undefined":
                     break;
@@ -335,7 +325,6 @@ var Pano = {
                     Pano.log.error("'title' parameter must be of type 'string'");
                     return;
             }
-            newLink.setAttributeNode(hrefAttribute);
             newLink.appendChild(img);
             return newLink;
         },
@@ -437,7 +426,10 @@ var Pano = {
          * @param {integer} n unique element id
          */
         createPanoElementVideo : function(element, parent, n){
-            let newVideo = document.createElement("video");
+            let newVideo = this.createElement("video", {
+                id: "--pano-video-" + n,
+                className: "--pano-video"
+            });
             if(typeof element.options === "object"){
                 let validOptions = ["controls", "autoplay", "loop", "muted", "preload"];
                 let options = element.options;
@@ -451,19 +443,10 @@ var Pano = {
                     }
                 }
             }
-            let classAttribute = document.createAttribute("class");
-            let idAttribute = document.createAttribute("id");
-            classAttribute.value = "--pano-video";
-            idAttribute.value = "--pano-video-" + n;
-            newVideo.setAttributeNode(classAttribute);
-            newVideo.setAttributeNode(idAttribute);
-            let newSource = document.createElement("source");
-            let srcAttribute = document.createAttribute("src");
-            srcAttribute.value = element.src;
-            newSource.setAttributeNode(srcAttribute);
-            let typeAttribute = document.createAttribute("type");
-            typeAttribute.value = "video/" + this.getExtension(element.src);
-            newSource.setAttributeNode(typeAttribute);
+            let newSource = this.createElement("source", {
+                src: element.src,
+                type: "video/" + this.getExtension(element.src)
+            });
             newVideo.appendChild(newSource);
             parent.appendChild(newVideo);
         },
@@ -475,6 +458,20 @@ var Pano = {
          */
         getExtension : function(element){
             return element.slice(element.indexOf(".", -1) + 1).toLowerCase();
+        },
+        /**
+         * 
+         * @param {string} type html element type (div, a...)
+         * @param {object} parameters html element parameters (id, class...)
+         * 
+         * @return {HTMLAllCollection} html element
+         */
+        createElement : function(type, parameters){
+            let newHtmlElement = document.createElement(type);
+            for(parameter in parameters){
+                newHtmlElement[parameter] = parameters[parameter];
+            }
+            return newHtmlElement;
         }
     },
     log : {
