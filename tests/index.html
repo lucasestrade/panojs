@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <script type="text/javascript" src="../src/pano.js"></script>
+    <script type="text/javascript" type="module" src="../src/pano.js"></script>
     <style>
         body {
             width: 100%;
@@ -18,22 +18,22 @@
 <body>
     <div id="caroussel"></div>
     <script>
-        new Pano.create("#caroussel", {
+        new Pano("#caroussel", {
             type: "linear",
             timeTransition: 0.5,
             dots: true,
             set: 2,
-            step: 1,
+            step: 2,
             items: [
                 {
-                    src: "file:///C:/Users/Lucas/Desktop/panojs/src/assets/img/img1.jpg",
+                    src: "file:///C:/Users/Lucas/Desktop/Documents/panojs/src/assets/img/img1.jpg",
                     label: "image 1",
                     labelOptions: {
                         position: "bottom",
                         color: "#FFFFFF",
                         backgroundColor: "rgba(0,0,0,0.7)",
-                        textAlign: "center",
-                        fontSize: 15,
+                        textAlign: "left",
+                        fontSize: 25,
                         textIndent: 5,
                         fontFamily: "arial",
                     },
@@ -48,22 +48,20 @@
                     }
                 },
                 {
-                    src: "file:///C:/Users/Lucas/Desktop/panojs/src/assets/img/img2.webp",
+                    src: "file:///C:/Users/Lucas/Desktop/Documents/panojs/src/assets/img/img2.webp",
                     label: "image 2",
                     imgOptions: {
                         backgroundSize: "cover"
-                    },
-                    focus: true
+                    }
                 },
                 {
-                    src: "file:///C:/Users/Lucas/Desktop/panojs/src/assets/img/img2.webp",
+                    src: "file:///C:/Users/Lucas/Desktop/Documents/panojs/src/assets/img/img2.webp",
                     imgOptions: {
                         backgroundSize: "cover"
-                    },
-                    focus: true
+                    }
                 },
-                {
-                    src: "file:///C:/Users/Lucas/Desktop/panojs/src/assets/videos/video1.mp4",
+                /*{
+                    src: "file:///C:/Users/Lucas/Desktop/Documents/panojs/src/assets/videos/video1.mp4",
                     label: "video 1",
                     labelOptions: {
                         position: "bottom",
@@ -72,10 +70,10 @@
                         textAlign: "center",
                         fontFamily: "arial"
                     },
-                    options: {
+                    videoOptions: {
                         "controls": true
                     }
-                }
+                }*/
             ],
             panoOptions: {
                 width: 300,

@@ -1,3 +1,8 @@
+.--pano-mainblock{
+    box-sizing: border-box;
+    position: relative;
+}
+
 .--pano-block{
     box-sizing: border-box;
     position: relative;
