@@ -91,6 +91,7 @@ function Pano(to, object) {
     };
     let rand = new Date().getTime() + Math.floor((Math.random() * 10000) + 1).toString(16);
     let n = 0;
+    let index = 0;
     let caroussel;
     let mainBlock = createElement("div", {
         className: providers.mainBlockClass,
@@ -130,7 +131,8 @@ function Pano(to, object) {
         let uniqId = rand + n;
         itemsIds.push(providers.panoId + uniqId);
         // create each pano
-        createPano(object, element, parent, uniqId);
+        createPano(object, element, parent, uniqId, index);
+        index++;
     });
     createPanoLayout(mainBlock, parent, panoLayout, rand + n, n);
     this.number = function (number) {
@@ -145,8 +147,9 @@ function Pano(to, object) {
      * @param {object} element items parameters
      * @param {HTMLAllCollection} parent html element parent
      * @param {string} uniqId unique index
+     * @param {number} index pano index
      */
-    function createPano(object, element, parent, uniqId) {
+    function createPano(object, element, parent, uniqId, index) {
         let elementType = getElementType(element.src);
         let blockStyleAttribute = document.createAttribute("style");
         blockStyleAttribute.value = "";
@@ -154,7 +157,10 @@ function Pano(to, object) {
         createStyleAttribute(object.panoOptions, blockStyleAttribute, defaultValue);
         let newBlock = createElement("div", {
             id: providers.panoId + uniqId,
-            className: providers.panoClass
+            className: providers.panoClass,
+            datasets : {
+                index: index
+            }
         });
         newBlock.setAttributeNode(blockStyleAttribute);
         parent.appendChild(newBlock);
@@ -569,7 +575,7 @@ function Pano(to, object) {
                 className: providers.dotsClass,
                 style: ""
             });
-            createDots(blockDots, n, panoLayout, step);
+            createDots(parent, blockDots, n, panoLayout, step);
             if (providers.carousselObject.type === "class") {
                 mainBlockValue = providers.carousselObject.value;
                 for (let i = 0; i < mainBlockValue.length; i++) {
@@ -582,14 +588,16 @@ function Pano(to, object) {
     }
     /**
      * create dots inputs into dots block
+     * @param {HTMLAllCollection} parent parent block
      * @param {HTMLAllCollection} blockDots block dots
      * @param {number} n number of items
      * @param {object} panoLayout pano options
      * @param {number} step number of items passed when click on dot
      */
-    async function createDots(blockDots, n, panoLayout, step) {
+    async function createDots(parent, blockDots, n, panoLayout, step) {
         let set = panoLayout.set;
-        let panoWidth = window.getComputedStyle(document.getElementsByClassName(providers.panoClass)[0], null).getPropertyValue("width");
+        let pano = document.getElementsByClassName(providers.panoClass)[0];
+        console.log(pano.offsetWidth);
         let numberOfDots = Math.ceil(n / set);
         numberOfDots = n === numberOfDots ? numberOfDots : Math.ceil(((numberOfDots + n) / set) / step);
         numberOfDots = numberOfDots === 1  && n !== set ? numberOfDots + 1 : n === set ? 0 : numberOfDots;
@@ -604,18 +612,19 @@ function Pano(to, object) {
             });
             blockDots.append(dotInput);
         }
-        createDotsEventListeners(panoWidth);
+        createDotsEventListeners(parent);
     }
     /**
      * create dots event listeners
+     * @param {HTMLAllCollection} parent parent block
      */
-    function createDotsEventListeners(panoWidth) {
+    function createDotsEventListeners(parent) {
         let dots = document.getElementsByClassName(providers.dotsInputClass);
         let action = function(){
             console.log(this);
             console.log(providers.carousselObject);
-            console.log(panoWidth);
-            document.getElementById(this.dataset.itemid).style.left = `-${panoWidth}`;
+            console.log(document.getElementById(this.dataset.itemid).style.minWidth);
+            parent.style.marginLeft = `-${panoWidth}px`;
             console.log(window.getComputedStyle(document.getElementById(this.dataset.itemid), null).getPropertyValue("left"));
         }
         Array.from(dots, dot => dot.addEventListener('click', action));

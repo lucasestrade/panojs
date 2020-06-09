@@ -1,6 +1,7 @@
 .--pano-mainblock{
     box-sizing: border-box;
     position: relative;
+    max-width: 100%;
 }
 
 .--pano-block{
